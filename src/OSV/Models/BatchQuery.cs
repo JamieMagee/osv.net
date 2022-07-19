@@ -3,7 +3,7 @@
 /// <summary>
 /// Batch query format.
 /// </summary>
-public record BatchQuery
+public sealed record BatchQuery
 {
     /// <summary>
     /// The queries that form this batch query.
