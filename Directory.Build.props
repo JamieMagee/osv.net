@@ -16,9 +16,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JamieMagee/osv.net</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/JamieMagee/OpenSourceVulnerabilities.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/JamieMagee/osv.net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>https://github.com/JamieMagee/OpenSourceVulnerabilities/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/JamieMagee/osv.net/releases</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup Label="Package References">
