@@ -61,12 +61,12 @@ jobs:
       packages: write
     runs-on: windows-latest
     steps:
-      - name: "Download Artefact"
+      - name: "Download Artifact"
         uses: actions/download-artifact@v3.0.0
         with:
           name: "windows-latest"
       - name: "Dotnet NuGet Add Source"
-        run: dotnet nuget add source https://nuget.pkg.github.com/Username/index.json --name GitHub --username Username --password ${{secrets.GITHUB_TOKEN}}
+        run: dotnet nuget add source https://nuget.pkg.github.com/JamieMagee/index.json --name GitHub --username Username --password ${{secrets.GITHUB_TOKEN}}
         shell: pwsh
       - name: "Dotnet NuGet Push"
         run: dotnet nuget push .\*.nupkg --api-key ${{ github.token }} --source GitHub --skip-duplicate
@@ -81,7 +81,7 @@ jobs:
       url: https://www.nuget.org/packages/osv
     runs-on: windows-latest
     steps:
-      - name: "Download Artefact"
+      - name: "Download Artifact"
         uses: actions/download-artifact@v3.0.0
         with:
           name: "windows-latest"
