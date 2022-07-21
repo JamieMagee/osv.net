@@ -457,14 +457,37 @@ dotnet_diagnostic.SA1633.severity = none
 # OTHER DEALINGS IN THE SOFTWARE.
 ##########################################
 
+# CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
+# Justification: Documentation missing upstream
+# https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs1591
 dotnet_diagnostic.CS1591.severity = none
+
+# SA1600: A C# code element is missing a documentation header.
+# Justification: Documentation missing upstream
+# https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1600.md
 dotnet_diagnostic.SA1600.severity = none
+
+# SA1623: The documentation text within a C# property's <summary> tag does not match the accessors within the property.
+# Justification: Unnecessary to start comments with 'gets or sets'
+# https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1623.md
 dotnet_diagnostic.SA1623.severity = none
-dotnet_diagnostic.SA1601.severity = none
+
+# IDE0065: 'using' directive placement
+# Justification: Rule doesn't understand global usings
+# https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0065
 dotnet_diagnostic.IDE0065.severity = none
+
+# SA1200: A C# using directive is placed outside of a namespace element.
+# Justification: Rule doesn't understand global usings
+# https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1200.md
 dotnet_diagnostic.SA1200.severity = none
+
+# SA1602: An item within a C# enumeration is missing an Xml documentation header.
+# Justification: Documentation missing upstream
+# https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1602.md
 dotnet_diagnostic.SA1602.severity = none
+
+# CA1716: Identifiers should not match keywords
+# Justification: Name comes from upstream
+# https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1716
 dotnet_diagnostic.CA1716.severity = none
-
-
-
