@@ -1,20 +1,20 @@
 # OSV.NET
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/JamieMagee/osv.net/Build?style=for-the-badge)](https://github.com/JamieMagee/osv.net/actions/workflows/build.yml?query=branch%3Amain)
-[![OSV.NET NuGet Package Version](https://img.shields.io/nuget/v/OSV?style=for-the-badge)](https://www.nuget.org/packages/OSV/)
-[![OSV.NET NuGet Package Downloads](https://img.shields.io/nuget/dt/OSV?style=for-the-badge)](https://www.nuget.org/packages/OSV/)
+[![OSV.NET NuGet Package Version](https://img.shields.io/nuget/v/OSV.Schema?style=for-the-badge)](https://www.nuget.org/packages/OSV.Schema/)
+[![OSV.NET NuGet Package Downloads](https://img.shields.io/nuget/dt/OSV.Schema?style=for-the-badge)](https://www.nuget.org/packages/OSV.Schema/)
 
-A .NET library for Open Source Vulnerabilities (OSV) schema and API client.
+.NET libraries for Open Source Vulnerabilities (OSV) schema and API client.
 
 ## Usage
 
-1. `dotnet add package OSV`
+1. `dotnet add package OSV.Client`
 2. Create an instance of the `OSVClient`
 
     ```C#
-    var client = new OSVClient();
+    using var client = new OSVClient();
     // or
-    var client = new OSVClient("https://api.osv.dev/v1/");
+    using var client = new OSVClient("https://api.osv.dev/v1/");
     ```
 
 3. Use the client to make API calls

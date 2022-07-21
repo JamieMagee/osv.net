@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <Product>OSV</Product>
+    <Description>A .NET library for Open Source Vulnerabilities (OSV) API client.</Description>
+    <PackageTags>OSV</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\OSV.Schema\OSV.Schema.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Restsharp" Version="108.0.1" />
+  </ItemGroup>
+
+</Project>
