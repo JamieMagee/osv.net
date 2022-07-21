@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Build">
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
     <Product>OSV</Product>
-    <Description>Project Description</Description>
+    <Description>A .NET library for Open Source Vulnerabilities (OSV) schema and API client. </Description>
     <PackageTags>OSV</PackageTags>
   </PropertyGroup>
 

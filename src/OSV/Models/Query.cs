@@ -10,7 +10,7 @@ public sealed record Query
     /// If specified, `version` should not be set.
     /// </summary>
     [JsonPropertyName("commit")]
-    public string? Commit { get; init; }
+    public string? Commit { get; set; }
 
     /// <summary>
     /// The version string to query for.
@@ -18,12 +18,12 @@ public sealed record Query
     /// If specified, `commit` should not be set.
     /// </summary>
     [JsonPropertyName("version")]
-    public string? Version { get; init; }
+    public string? Version { get; set; }
 
     /// <summary>
     /// The package to query against.
     /// When a `commit` hash is given, this is optional.
     /// </summary>
     [JsonPropertyName("package")]
-    public Package Package { get; init; } = null!;
+    public Package Package { get; set; } = null!;
 }

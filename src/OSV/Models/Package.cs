@@ -12,7 +12,7 @@ public sealed record Package
     /// For C/C++ projects integrated in OSS-Fuzz, this is the name used for the integration.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; } = null!;
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Required.
@@ -20,12 +20,12 @@ public sealed record Package
     /// For the complete list of valid ecosystem names, see https://ossf.github.io/osv-schema/#affectedpackage-field.
     /// </summary>
     [JsonPropertyName("ecosystem")]
-    public Ecosystem Ecosystem { get; init; }
+    public Ecosystem Ecosystem { get; set; }
 
     /// <summary>
     /// Optional.
     /// The package URL for this package.
     /// </summary>
     [JsonPropertyName("purl")]
-    public string? Purl { get; init; }
+    public string? Purl { get; set; }
 }

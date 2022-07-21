@@ -6,11 +6,11 @@ public sealed record Credit
     /// The name to give credit to.
     /// </summary>
     [JsonPropertyName("name")]
-    public string Name { get; init; } = null!;
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Contact methods (URLs).
     /// </summary>
     [JsonPropertyName("contact")]
-    public IEnumerable<string> Contact { get; init; } = null!;
+    public IEnumerable<string> Contact { get; set; } = null!;
 }

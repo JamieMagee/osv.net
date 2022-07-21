@@ -10,12 +10,12 @@ public sealed record Reference
     /// The type of the reference.
     /// </summary>
     [JsonPropertyName("type")]
-    public ReferenceType Type { get; init; }
+    public ReferenceType Type { get; set; }
 
     /// <summary>
     /// Required.
     /// The URL.
     /// </summary>
     [JsonPropertyName("url")]
-    public string Url { get; init; } = null!;
+    public string Url { get; set; } = null!;
 }

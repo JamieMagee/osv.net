@@ -9,5 +9,5 @@ public sealed record BatchQuery
     /// The queries that form this batch query.
     /// </summary>
     [JsonPropertyName("queries")]
-    public IEnumerable<Query> Queries { get; init; } = null!;
+    public IEnumerable<Query> Queries { get; set; } = null!;
 }

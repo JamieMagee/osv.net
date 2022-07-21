@@ -6,11 +6,11 @@ public sealed record Severity
     /// The type of this severity entry.
     /// </summary>
     [JsonPropertyName("type")]
-    public SeverityType Type { get; init; }
+    public SeverityType Type { get; set; }
 
     /// <summary>
     /// The quantitative score.
     /// </summary>
     [JsonPropertyName("score")]
-    public string Score { get; init; } = null!;
+    public string Score { get; set; } = null!;
 }
