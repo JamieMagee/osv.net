@@ -15,7 +15,7 @@
   </ItemGroup>
   
   <ItemGroup Label="Package References">
-    <PackageReference Include="Restsharp" Version="108.0.2" />
+    <PackageReference Include="Restsharp" Version="108.0.3" />
   </ItemGroup>
 
 </Project>
