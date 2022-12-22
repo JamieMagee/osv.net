@@ -1,6 +1,6 @@
 # OSV.NET
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/JamieMagee/osv.net/Build?style=for-the-badge)](https://github.com/JamieMagee/osv.net/actions/workflows/build.yml?query=branch%3Amain)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/JamieMagee/osv.net/build.yml?branch=main&style=for-the-badge)](https://github.com/JamieMagee/osv.net/actions/workflows/build.yml?query=branch%3Amain)
 [![OSV.NET NuGet Package Version](https://img.shields.io/nuget/v/OSV.Schema?style=for-the-badge)](https://www.nuget.org/packages/OSV.Schema/)
 
 .NET libraries for Open Source Vulnerabilities (OSV) schema and API client.
