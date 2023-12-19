@@ -6,7 +6,7 @@ public class OSVClientTest
 {
     public OSVClientTest() => this.Client = new OSVClient();
 
-    private IOSVClient Client { get; }
+    private OSVClient Client { get; }
 
     [Theory]
     [ClassData(typeof(QueryAffectedTestData))]
