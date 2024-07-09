@@ -4,8 +4,8 @@ public class QueryAffectedBatchTestData : TheoryData<BatchQuery>
 {
     public QueryAffectedBatchTestData() => this.Add(new()
     {
-        Queries = new[]
-        {
+        Queries =
+        [
             new Query
             {
                 Package = new Package
@@ -15,6 +15,6 @@ public class QueryAffectedBatchTestData : TheoryData<BatchQuery>
                 },
                 Version = "2.4.1",
             },
-        },
+        ],
     });
 }
