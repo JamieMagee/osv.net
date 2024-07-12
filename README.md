@@ -1,7 +1,8 @@
 # OSV.NET
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/JamieMagee/osv.net/build.yml?branch=main&style=for-the-badge)](https://github.com/JamieMagee/osv.net/actions/workflows/build.yml?query=branch%3Amain)
-[![OSV.NET NuGet Package Version](https://img.shields.io/nuget/v/OSV.Schema?style=for-the-badge)](https://www.nuget.org/packages/OSV.Schema/)
+[![GitHub Workflow Status][1]][2]
+[![OSV.NET NuGet Package Version][3]][4]
+[![OSSF-Scorecard Score][5]][6]
 
 .NET libraries for Open Source Vulnerabilities (OSV) schema and API client.
 
@@ -32,4 +33,12 @@
 
 ## License
 
-All packages in this repository are licensed under [the MIT license](https://opensource.org/licenses/MIT).
+All packages in this repository are licensed under [the MIT license][7].
+
+[1]: https://img.shields.io/github/actions/workflow/status/JamieMagee/osv.net/build.yml?branch=main&style=for-the-badge
+[2]: https://github.com/JamieMagee/osv.net/actions/workflows/build.yml?query=branch%3Amain
+[3]: https://img.shields.io/nuget/v/OSV.Schema?style=for-the-badge
+[4]: https://www.nuget.org/packages/OSV.Schema/
+[5]: https://img.shields.io/ossf-scorecard/github.com/JamieMagee/osv.net?style=for-the-badge
+[6]: https://scorecard.dev/viewer/?uri=github.com/JamieMagee/osv.net
+[7]: https://opensource.org/licenses/MIT
