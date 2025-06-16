@@ -10,4 +10,6 @@ public enum SeverityType
     Unspecified,
     [EnumMember(Value = "CVSS_V3")]
     CvssV3,
+    [EnumMember(Value = "CVSS_V4")]
+    CvssV4,
 }
