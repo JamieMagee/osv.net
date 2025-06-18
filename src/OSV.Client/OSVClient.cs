@@ -106,7 +106,7 @@ public sealed class OSVClient : IOSVClient, IDisposable
 
     private static JsonSerializerOptions CreateJsonOptions() => new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNameCaseInsensitive = true,
     };
