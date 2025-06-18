@@ -1,93 +1,194 @@
 namespace OSV.Client;
 
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Text;
 
 public sealed class OSVClient : IOSVClient, IDisposable
 {
-    private readonly RestClient client;
+    private readonly HttpClient httpClient;
+    private readonly bool ownsHttpClient;
+    private readonly JsonSerializerOptions jsonOptions;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OSVClient"/> class with a custom HttpClient.
+    /// This constructor is typically used with dependency injection.
+    /// </summary>
+    /// <param name="httpClient">The HttpClient to use for requests.</param>
+    public OSVClient(HttpClient httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        this.ownsHttpClient = false;
+        this.jsonOptions = CreateJsonOptions();
+
+        // Configure default settings if not already configured
+        if (this.httpClient.BaseAddress == null)
+        {
+            this.httpClient.BaseAddress = new Uri("https://api.osv.dev/v1/");
+        }
+
+        if (this.httpClient.DefaultRequestHeaders.UserAgent.Count == 0)
+        {
+            var version = typeof(OSVClient).GetTypeInfo().Assembly.GetName().Version;
+            this.httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"osv.net/{version}");
+        }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OSVClient"/> class with a base URI.
+    /// This constructor creates its own HttpClient instance.
+    /// </summary>
+    /// <param name="baseUri">The base URI for the OSV API.</param>
     public OSVClient(string baseUri)
     {
         var version = typeof(OSVClient).GetTypeInfo().Assembly.GetName().Version;
 
-        var clientOptions = new RestClientOptions(baseUri)
+        this.httpClient = new HttpClient
         {
-            UserAgent = "osv.net/" + version,
+            BaseAddress = new Uri(baseUri),
         };
+        this.httpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"osv.net/{version}");
 
-        this.client = new RestClient(clientOptions);
+        this.ownsHttpClient = true;
+        this.jsonOptions = CreateJsonOptions();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OSVClient"/> class with the default OSV API endpoint.
+    /// This constructor creates its own HttpClient instance.
+    /// </summary>
     public OSVClient()
         : this("https://api.osv.dev/v1/")
     {
     }
 
-    /// <summary>
-    /// Query vulnerabilities for a particular project at a given commit or version.
-    /// </summary>
-    /// <param name="query">The query to use.</param>
-    /// <param name="cancellationToken">The cancellation token to use.</param>
-    /// <returns>The vulnerabilities.</returns>
-    public Task<VulnerabilityList> QueryAffectedAsync(Query query, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task<VulnerabilityList> QueryAffectedAsync(Query query, CancellationToken cancellationToken = default)
     {
-        var request = new RestRequest("query", Method.Post)
+        if (query == null)
         {
-            RequestFormat = DataFormat.Json,
-        }.AddBody(query);
-        return this.ExecuteAsync<VulnerabilityList>(request, cancellationToken);
+            throw new ArgumentNullException(nameof(query));
+        }
+
+        return await this.PostAsync<Query, VulnerabilityList>("query", query, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Query vulnerabilities (batched) for given package versions and commits.
-    /// This currently allows a maximum of 1000 package versions to be included in a single query.
-    /// </summary>
-    /// <param name="batchQuery">The query to use.</param>
-    /// <param name="cancellationToken">The cancellation token to use.</param>
-    /// <returns>The vulnerabilities.</returns>
-    public Task<BatchVulnerabilityList> QueryAffectedBatchAsync(BatchQuery batchQuery, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task<BatchVulnerabilityList> QueryAffectedBatchAsync(BatchQuery batchQuery, CancellationToken cancellationToken = default)
     {
-        var request = new RestRequest("querybatch", Method.Post)
+        if (batchQuery == null)
         {
-            RequestFormat = DataFormat.Json,
-        }.AddBody(batchQuery);
-        return this.ExecuteAsync<BatchVulnerabilityList>(request, cancellationToken);
+            throw new ArgumentNullException(nameof(batchQuery));
+        }
+
+        return await this.PostAsync<BatchQuery, BatchVulnerabilityList>("querybatch", batchQuery, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Return a <see cref="Vulnerability"/> object for a given OSV ID.
-    /// </summary>
-    /// <param name="id">The ID of the vulnerability.</param>
-    /// <param name="cancellationToken">The cancellation token to use.</param>
-    /// <returns>The vulnerability.</returns>
-    public Task<Vulnerability> GetVulnerabilityAsync(string id, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task<Vulnerability> GetVulnerabilityAsync(string id, CancellationToken cancellationToken = default)
     {
-        var request = new RestRequest("vulns/{id}").AddUrlSegment("id", id);
-        return this.ExecuteAsync<Vulnerability>(request, cancellationToken);
+        if (string.IsNullOrEmpty(id))
+        {
+            throw new ArgumentException("Vulnerability ID cannot be null or empty.", nameof(id));
+        }
+
+        return await this.GetAsync<Vulnerability>($"vulns/{id}", cancellationToken).ConfigureAwait(false);
     }
 
-    public void Dispose() => this.client.Dispose();
-
-    private async Task<T> ExecuteAsync<T>(RestRequest request, CancellationToken cancellationToken = default)
-        where T : new()
+    public void Dispose()
     {
-        T data;
+        if (this.ownsHttpClient)
+        {
+            this.httpClient.Dispose();
+        }
+    }
 
+    private static JsonSerializerOptions CreateJsonOptions() => new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNameCaseInsensitive = true,
+    };
+
+    private async Task<TResponse> GetAsync<TResponse>(string requestUri, CancellationToken cancellationToken = default)
+        where TResponse : class
+    {
         try
         {
-            var response = await this.client.ExecuteAsync<T>(request, cancellationToken).ConfigureAwait(false);
-            if (!response.IsSuccessful)
-            {
-                throw new OSVException(null);
-            }
-
-            data = response.ThrowIfError().Data!;
+            using var response = await this.httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+            return await this.ProcessResponseAsync<TResponse>(response).ConfigureAwait(false);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new OSVException($"HTTP request failed: {ex.Message}", ex);
+        }
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+        {
+            throw new OSVException("Request timed out.", ex);
+        }
+        catch (TaskCanceledException ex) when (cancellationToken.IsCancellationRequested)
+        {
+            throw new OSVException("Request was cancelled.", ex);
         }
         catch (Exception ex)
         {
-            throw new OSVException(null, ex);
+            throw new OSVException($"An unexpected error occurred: {ex.Message}", ex);
+        }
+    }
+
+    private async Task<TResponse> PostAsync<TRequest, TResponse>(string requestUri, TRequest content, CancellationToken cancellationToken = default)
+        where TRequest : class
+        where TResponse : class
+    {
+        try
+        {
+            var json = JsonSerializer.Serialize(content, this.jsonOptions);
+            using var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            using var response = await this.httpClient.PostAsync(requestUri, httpContent, cancellationToken).ConfigureAwait(false);
+            return await this.ProcessResponseAsync<TResponse>(response).ConfigureAwait(false);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new OSVException($"HTTP request failed: {ex.Message}", ex);
+        }
+        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
+        {
+            throw new OSVException("Request timed out.", ex);
+        }
+        catch (TaskCanceledException ex) when (cancellationToken.IsCancellationRequested)
+        {
+            throw new OSVException("Request was cancelled.", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new OSVException($"An unexpected error occurred: {ex.Message}", ex);
+        }
+    }
+
+    private async Task<TResponse> ProcessResponseAsync<TResponse>(HttpResponseMessage response)
+        where TResponse : class
+    {
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new OSVException(response.StatusCode, content);
         }
 
-        return data;
+        if (string.IsNullOrEmpty(content))
+        {
+            throw new OSVException("Response content was empty.");
+        }
+
+        try
+        {
+            var result = JsonSerializer.Deserialize<TResponse>(content, this.jsonOptions);
+            return result ?? throw new OSVException("Failed to deserialize response content.");
+        }
+        catch (JsonException ex)
+        {
+            throw new OSVException(HttpStatusCode.OK, content, ex, "Failed to deserialize response content.");
+        }
     }
 }

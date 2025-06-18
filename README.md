@@ -5,31 +5,93 @@
 [![OSSF-Scorecard Score][5]][6]
 
 .NET libraries for Open Source Vulnerabilities (OSV) schema and API client.
+Currently support version 1.7.0 of the OSV schema.
 
 ## Usage
 
-1. `dotnet add package OSV.Client`
-2. Create an instance of the `OSVClient`
+There are two ways to use the OSV.NET library:
 
-    ```C#
-    using var client = new OSVClient();
-    // or
-    using var client = new OSVClient("https://api.osv.dev/v1/");
-    ```
+- Manual instantiation of the `OSVClient` class
+- Dependency Injection (DI) for better integration in ASP.NET Core applications
 
-3. Use the client to make API calls
+### Manual Instantiation
 
-    ```C#
+```C#
+using OSV.Client;
+
+var client = new OSVClient();
+
+try
+{
+    // Query for vulnerabilities
     var query = new Query
     {
-        Package = new Package {
-            Name = "jinja2",
-            Ecosystem = Ecosystem.PyPI
+        Package = new Package
+        {
+            Name = "lodash",
+            Ecosystem = "npm"
         },
-        Version = "2.4.1",
+        Version = "4.17.20"
+    };
+
+    var vulnerabilities = await client.QueryAffectedAsync(query);
+    Console.WriteLine($"Found {vulnerabilities.Vulns.Count} vulnerabilities for lodash@4.17.20");
+
+    // Get a specific vulnerability
+    if (vulnerabilities.Vulns.Count > 0)
+    {
+        var vulnId = vulnerabilities.Vulns[0].Id;
+        var vulnerability = await client.GetVulnerabilityAsync(vulnId);
+        Console.WriteLine($"Vulnerability {vulnerability.Id}: {vulnerability.Summary}");
     }
-    var vulnerabilityList = await client.QueryAffectedAsync(query)
-    ```
+}
+catch (OSVException ex)
+{
+    Console.WriteLine($"OSV API Error: {ex.Message}");
+    if (ex.StatusCode.HasValue)
+    {
+        Console.WriteLine($"HTTP Status: {ex.StatusCode}");
+    }
+}
+finally
+{
+    client.Dispose();
+}
+```
+
+### Dependency Injection
+
+```C#
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+var builder = Host.CreateApplicationBuilder(args);
+
+// Register OSV client
+builder.Services.AddOSVClient(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+    // Add any additional HttpClient configuration
+});
+
+var app = builder.Build();
+
+// Use the client through dependency injection
+var osvClient = app.Services.GetRequiredService<IOSVClient>();
+
+// Use the client
+var query = new Query
+{
+    Package = new Package
+    {
+        Name = "lodash",
+        Ecosystem = "npm"
+    },
+    Version = "4.17.20"
+};
+
+var vulnerabilities = await osvClient.QueryAffectedAsync(query);
+```
 
 ## License
 
