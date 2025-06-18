@@ -9,12 +9,20 @@ public enum ReferenceType
     Web,
     [EnumMember(Value = "ADVISORY")]
     Advisory,
+    [EnumMember(Value = "ARTICLE")]
+    Article,
+    [EnumMember(Value = "DETECTION")]
+    Detection,
+    [EnumMember(Value = "DISCUSSION")]
+    Discussion,
     [EnumMember(Value = "REPORT")]
     Report,
     [EnumMember(Value = "FIX")]
     Fix,
+    [EnumMember(Value = "INTRODUCED")]
+    Introduced,
     [EnumMember(Value = "PACKAGE")]
     Package,
-    [EnumMember(Value = "ARTICLE")]
-    Article,
+    [EnumMember(Value = "EVIDENCE")]
+    Evidence,
 }

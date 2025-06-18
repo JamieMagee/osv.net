@@ -25,4 +25,11 @@ public sealed record Range
     /// </summary>
     [JsonPropertyName("events")]
     public IEnumerable<Event> Events { get; set; } = null!;
+
+    /// <summary>
+    /// Optional.
+    /// JSON object holding additional information about the range as defined by the database for which the record applies.
+    /// </summary>
+    [JsonPropertyName("database_specific")]
+    public Dictionary<string, object>? DatabaseSpecific { get; set; }
 }

@@ -18,6 +18,12 @@ public sealed record Event
     public string? Fixed { get; set; }
 
     /// <summary>
+    /// The last known affected version.
+    /// </summary>
+    [JsonPropertyName("last_affected")]
+    public string? LastAffected { get; set; }
+
+    /// <summary>
     /// The limit to apply to the range.
     /// </summary>
     [JsonPropertyName("limit")]
