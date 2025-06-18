@@ -1,7 +1,5 @@
 ﻿namespace OSV.Client.Test;
 
-using OSV.Client.Test.TestData;
-
 public class OSVClientTest
 {
     public OSVClientTest() => this.Client = new OSVClient();
@@ -9,26 +7,44 @@ public class OSVClientTest
     private OSVClient Client { get; }
 
     [Theory]
-    [ClassData(typeof(QueryAffectedTestData))]
-    public async Task Should_QueryAffectedAsync(Query query)
+    [InlineData(Ecosystem.PyPI, "jinja2", "2.4.1")]
+    public async Task Should_QueryAffectedAsync(Ecosystem ecosystem, string packageName, string version)
     {
-        var response = await this.Client.QueryAffectedAsync(query).ConfigureAwait(true);
+        var query = new Query
+        {
+            Package = new Package { Name = packageName, Ecosystem = ecosystem },
+            Version = version,
+        };
+
+        var response = await this.Client.QueryAffectedAsync(query, TestContext.Current.CancellationToken).ConfigureAwait(true);
         response.ShouldNotBeNull();
     }
 
     [Theory]
-    [ClassData(typeof(QueryAffectedBatchTestData))]
-    public async Task Should_QueryAffectedBatchAsync(BatchQuery batchQuery)
+    [InlineData(Ecosystem.PyPI, "jinja2", "2.4.1")]
+    public async Task Should_QueryAffectedBatchAsync(Ecosystem ecosystem, string packageName, string version)
     {
-        var response = await this.Client.QueryAffectedBatchAsync(batchQuery).ConfigureAwait(true);
+        var batchQuery = new BatchQuery
+        {
+            Queries =
+            [
+                new Query
+                {
+                    Package = new Package { Name = packageName, Ecosystem = ecosystem },
+                    Version = version,
+                },
+            ],
+        };
+
+        var response = await this.Client.QueryAffectedBatchAsync(batchQuery, TestContext.Current.CancellationToken).ConfigureAwait(true);
         response.ShouldNotBeNull();
     }
 
     [Theory]
-    [ClassData(typeof(GetVulnerabilityTestData))]
+    [InlineData("OSV-2020-111")]
     public async Task Should_GetVulnerabilityAsync(string id)
     {
-        var response = await this.Client.GetVulnerabilityAsync(id).ConfigureAwait(true);
+        var response = await this.Client.GetVulnerabilityAsync(id, TestContext.Current.CancellationToken).ConfigureAwait(true);
         response.ShouldNotBeNull();
     }
 }
