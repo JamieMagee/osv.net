@@ -13,7 +13,7 @@ public class OSVClientTest
     public async Task Should_QueryAffectedAsync(Query query)
     {
         var response = await this.Client.QueryAffectedAsync(query).ConfigureAwait(true);
-        response.Should().NotBeNull();
+        response.ShouldNotBeNull();
     }
 
     [Theory]
@@ -21,7 +21,7 @@ public class OSVClientTest
     public async Task Should_QueryAffectedBatchAsync(BatchQuery batchQuery)
     {
         var response = await this.Client.QueryAffectedBatchAsync(batchQuery).ConfigureAwait(true);
-        response.Should().NotBeNull();
+        response.ShouldNotBeNull();
     }
 
     [Theory]
@@ -29,6 +29,6 @@ public class OSVClientTest
     public async Task Should_GetVulnerabilityAsync(string id)
     {
         var response = await this.Client.GetVulnerabilityAsync(id).ConfigureAwait(true);
-        response.Should().NotBeNull();
+        response.ShouldNotBeNull();
     }
 }
