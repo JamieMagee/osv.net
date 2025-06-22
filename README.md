@@ -11,19 +11,18 @@ Currently support version 1.7.0 of the OSV schema.
 
 There are two ways to use the OSV.NET library:
 
-- Manual instantiation of the `OSVClient` class
-- Dependency Injection (DI) for better integration in ASP.NET Core applications
+- Manual instantiation
+- Dependency injection (DI)
 
 ### Manual Instantiation
 
 ```C#
 using OSV.Client;
 
-var client = new OSVClient();
+using var client = new OSVClient();
 
 try
 {
-    // Query for vulnerabilities
     var query = new Query
     {
         Package = new Package
@@ -34,63 +33,26 @@ try
         Version = "4.17.20"
     };
 
-    var vulnerabilities = await client.QueryAffectedAsync(query);
-    Console.WriteLine($"Found {vulnerabilities.Vulns.Count} vulnerabilities for lodash@4.17.20");
-
-    // Get a specific vulnerability
-    if (vulnerabilities.Vulns.Count > 0)
-    {
-        var vulnId = vulnerabilities.Vulns[0].Id;
-        var vulnerability = await client.GetVulnerabilityAsync(vulnId);
-        Console.WriteLine($"Vulnerability {vulnerability.Id}: {vulnerability.Summary}");
-    }
+    var response = await client.QueryAffectedAsync(query);
+    Console.WriteLine($"Found {response.Vulnerabilities.Count()} vulnerabilities for lodash@4.17.20");
 }
 catch (OSVException ex)
 {
-    Console.WriteLine($"OSV API Error: {ex.Message}");
-    if (ex.StatusCode.HasValue)
-    {
-        Console.WriteLine($"HTTP Status: {ex.StatusCode}");
-    }
-}
-finally
-{
-    client.Dispose();
+    // Handle OSV-specific exceptions
 }
 ```
 
 ### Dependency Injection
 
+Register the OSV client in your application's service collection, typically in `Program.cs`:
+
 ```C#
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-var builder = Host.CreateApplicationBuilder(args);
-
 // Register OSV client
 builder.Services.AddOSVClient(client =>
 {
-    client.Timeout = TimeSpan.FromSeconds(30);
     // Add any additional HttpClient configuration
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
-
-var app = builder.Build();
-
-// Use the client through dependency injection
-var osvClient = app.Services.GetRequiredService<IOSVClient>();
-
-// Use the client
-var query = new Query
-{
-    Package = new Package
-    {
-        Name = "lodash",
-        Ecosystem = "npm"
-    },
-    Version = "4.17.20"
-};
-
-var vulnerabilities = await osvClient.QueryAffectedAsync(query);
 ```
 
 ## License
