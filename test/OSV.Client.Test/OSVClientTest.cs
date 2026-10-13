@@ -20,6 +20,14 @@ public class OSVClientTest
         response.ShouldNotBeNull();
     }
 
+    [Fact]
+    public async Task Should_RejectNullQueryAsync()
+    {
+        var task = this.Client.QueryAffectedAsync(null!, TestContext.Current.CancellationToken);
+        var exception = await Should.ThrowAsync<ArgumentNullException>(task).ConfigureAwait(true);
+        exception.ParamName.ShouldBe("query");
+    }
+
     [Theory]
     [InlineData(Ecosystem.PyPI, "jinja2", "2.4.1")]
     public async Task Should_QueryAffectedBatchAsync(Ecosystem ecosystem, string packageName, string version)
@@ -40,11 +48,29 @@ public class OSVClientTest
         response.ShouldNotBeNull();
     }
 
+    [Fact]
+    public async Task Should_RejectNullBatchQueryAsync()
+    {
+        var task = this.Client.QueryAffectedBatchAsync(null!, TestContext.Current.CancellationToken);
+        var exception = await Should.ThrowAsync<ArgumentNullException>(task).ConfigureAwait(true);
+        exception.ParamName.ShouldBe("batchQuery");
+    }
+
     [Theory]
     [InlineData("OSV-2020-111")]
     public async Task Should_GetVulnerabilityAsync(string id)
     {
         var response = await this.Client.GetVulnerabilityAsync(id, TestContext.Current.CancellationToken).ConfigureAwait(true);
         response.ShouldNotBeNull();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task Should_RejectInvalidVulnerabilityIdAsync(string? id)
+    {
+        var task = this.Client.GetVulnerabilityAsync(id!, TestContext.Current.CancellationToken);
+        var exception = await Should.ThrowAsync<ArgumentException>(task).ConfigureAwait(true);
+        exception.ParamName.ShouldBe("id");
     }
 }

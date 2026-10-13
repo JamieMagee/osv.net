@@ -64,36 +64,36 @@ public sealed class OSVClient : IOSVClient, IDisposable
     }
 
     /// <inheritdoc/>
-    public async Task<VulnerabilityList> QueryAffectedAsync(Query query, CancellationToken cancellationToken = default)
+    public Task<VulnerabilityList> QueryAffectedAsync(Query query, CancellationToken cancellationToken = default)
     {
         if (query == null)
         {
-            throw new ArgumentNullException(nameof(query));
+            return Task.FromException<VulnerabilityList>(new ArgumentNullException(nameof(query)));
         }
 
-        return await this.PostAsync<Query, VulnerabilityList>("query", query, cancellationToken).ConfigureAwait(false);
+        return this.PostAsync<Query, VulnerabilityList>("query", query, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<BatchVulnerabilityList> QueryAffectedBatchAsync(BatchQuery batchQuery, CancellationToken cancellationToken = default)
+    public Task<BatchVulnerabilityList> QueryAffectedBatchAsync(BatchQuery batchQuery, CancellationToken cancellationToken = default)
     {
         if (batchQuery == null)
         {
-            throw new ArgumentNullException(nameof(batchQuery));
+            return Task.FromException<BatchVulnerabilityList>(new ArgumentNullException(nameof(batchQuery)));
         }
 
-        return await this.PostAsync<BatchQuery, BatchVulnerabilityList>("querybatch", batchQuery, cancellationToken).ConfigureAwait(false);
+        return this.PostAsync<BatchQuery, BatchVulnerabilityList>("querybatch", batchQuery, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<Vulnerability> GetVulnerabilityAsync(string id, CancellationToken cancellationToken = default)
+    public Task<Vulnerability> GetVulnerabilityAsync(string id, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(id))
         {
-            throw new ArgumentException("Vulnerability ID cannot be null or empty.", nameof(id));
+            return Task.FromException<Vulnerability>(new ArgumentException("Vulnerability ID cannot be null or empty.", nameof(id)));
         }
 
-        return await this.GetAsync<Vulnerability>($"vulns/{id}", cancellationToken).ConfigureAwait(false);
+        return this.GetAsync<Vulnerability>($"vulns/{id}", cancellationToken);
     }
 
     public void Dispose()
